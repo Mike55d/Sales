@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Linea{% endblock %}
+
+{% block body %}
+    <h1>Linea</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ linea.id }}</td>
+            </tr>
+            <tr>
+                <th>Numero</th>
+                <td>{{ linea.numero }}</td>
+            </tr>
+            <tr>
+                <th>Operadora</th>
+                <td>{{ linea.operadora }}</td>
+            </tr>
+            <tr>
+                <th>Chip</th>
+                <td>{{ linea.chip }}</td>
+            </tr>
+            <tr>
+                <th>Tipo</th>
+                <td>{{ linea.tipo }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('linea_index') }}">back to list</a>
+
+    <a href="{{ path('linea_edit', {'id': linea.id}) }}">edit</a>
+
+    {{ include('linea/_delete_form.html.twig') }}
+{% endblock %}

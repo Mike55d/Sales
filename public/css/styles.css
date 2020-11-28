@@ -1,0 +1,24 @@
+.inline{
+  display: inline;
+}
+
+.blue{
+  height: 120px;
+}
+
+.bg-orange{
+  background-color: orangered;
+}
+
+.logo-login{
+  height: 450px;
+
+}
+.jstree-themeicon-custom {
+  background-size: 18px !important;
+}
+
+.buscarInput{
+  width: 250px !important;
+  display: inline-block !important;
+}

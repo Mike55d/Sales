@@ -1,0 +1,95 @@
+{% extends 'baseNew.html.twig' %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ asset ('js/treePlugin/src/themes/default/style.css')}}" />
+{% endblock %}
+
+{% block body %}
+<div class="col-md-8 offset-md-2">
+  <div class="card">
+    <div class="card-body">
+      <div class="text-center">
+        <input type="text" placeholder="Buscar linea" class="form-control input-sm buscarInput mr-2">
+        <button class="btn btn-success buscarBtn">Buscar</button>
+      </div>
+      <br><br>
+      <div id="jstree_demo"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script src="{{ asset ('js/treePlugin/dist/jstree.js')}}"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#jstree_demo').jstree({
+      "core": {
+        "animation": 0,
+        "check_callback": function (op, node, par, pos, more) {
+          if ((op === "move_node" || op === "copy_node") && node.type && node.type == "root") {
+            return false;
+          }
+          if ((op === "move_node" || op === "copy_node") && more && more.core && !confirm('Estas seguro ?')) {
+            return false;
+          }
+          return true;
+        },
+        "themes": {
+          "stripes": true
+        },
+        'data': {
+          'method': 'POST',
+          'url': "{{ path ('getData')}}",
+          'success': function (res) {
+            console.log(res);
+          }
+        }
+
+      },
+      "types": {
+        "#": {
+          "max_children": 1,
+          "max_depth": 4,
+          "valid_children": ["root"]
+        },
+        "root": {
+          "icon": "{{ asset ('icons/house.png')}}",
+          "valid_children": ["default"]
+        },
+        "default": {
+          "valid_children": []
+        },
+      },
+      "plugins": [
+        "contextmenu", "dnd", "search",
+        "state", "types", "wholerow"
+      ]
+    });
+    var instance = $('#jstree_demo').jstree(true);
+    $(document).on('dnd_stop.vakata.jstree', function (e, data) {
+      let newParent = instance.get_parent(data.data.nodes[0]);
+      let childrens = data.data.nodes;
+      $.ajax({
+        'url': "{{ path ('changeLinea')}}",
+        'type': 'POST',
+        'data': 'unidad=' + newParent + '&lineas=' + childrens,
+        success: function (res) {
+          console.log(res);
+        },
+        fail: function (error) {
+          console.log(error);
+        }
+      })
+    })
+
+    $('.buscarBtn').click(function () {
+      $('#jstree_demo').jstree(true).search($('.buscarInput').val());
+    })
+
+  });
+</script>
+{% endblock %}

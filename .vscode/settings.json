@@ -1,0 +1,6 @@
+{
+  "editor.wrappingIndent": "indent",
+  "emmet.includeLanguages": {
+    "javascript": "Twig"
+  }
+}
