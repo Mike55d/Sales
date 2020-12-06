@@ -1,0 +1,53 @@
+{% extends 'baseLogin.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">Inicio de sesion</p>
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+      <form method="post">
+        <div class="input-group mb-3">
+          <input value="{{ last_username }}" name="username" id="inputUsername" class="form-control" required autofocus placeholder="Username">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" name="password" id="inputPassword" class="form-control" required placeholder="Password">
+           <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <!-- /.col -->
+          <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary btn-block mb-3">Ingresar</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+
+      <p class="mb-1">
+        <a href="forgot-password.html">Olvide mi contraseña</a>
+      </p>
+      <p class="mb-0">
+        <a href="register.html" class="text-center">Registro</a>
+      </p>
+    </div>
+    <!-- /.login-card-body -->
+  </div>
+
+
+
+{% endblock %}

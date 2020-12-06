@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-6 pl-5 pr-5">
+		<h1>Users</h1>
+		<table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Username</th>
+					<th>Active</th>
+					<th>actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in users %}
+				{% if user.username != "admin" %}
+				<tr>
+					<td>{{ user.id }}</td>
+					<td>{{ user.username }}</td>
+					<td>{{ user.isActive ? 'Yes' : 'No' }}</td>
+					<td>
+						<a class="btn btn-sm btn-info" href="{{ path('user_show', {'id': user.id}) }}">Ver</a>
+						<a class="btn btn-sm btn-warning" href="{{ path('user_edit', {'id': user.id}) }}">Editar</a>
+						{{ include('user/_delete_form.html.twig') }}
+					</td>
+				</tr>
+				{% endif %}
+				{% endfor %}
+			</tbody>
+		</table>
+		<a class="btn btn-success" href="{{ path('user_new') }}">Nuevo</a>
+	</div>
+</div>
+
+{% endblock %}

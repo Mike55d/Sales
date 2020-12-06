@@ -1,0 +1,21 @@
+{% form_theme form 'formTemplate.html.twig' %}
+{% block css %}
+<style>
+	label {
+		margin-right: 25px;
+		margin-top:10px;
+	}
+	input{
+		margin-bottom:15px;
+	}
+</style>
+{% endblock %}
+
+{{ form_start(form) }}
+	{{ form_widget(form) }}
+	<br>
+	<div class="text-center">
+	<button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+	</div>
+{{ form_end(form) }}
+

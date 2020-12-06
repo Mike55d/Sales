@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block body %}
+<h1>User</h1>
+
+<table class="table">
+	<tbody>
+		<tr>
+			<th>Id</th>
+			<td>{{ user.id }}</td>
+		</tr>
+		<tr>
+			<th>Username</th>
+			<td>{{ user.username }}</td>
+		</tr>
+		{% if user.email %}
+			<tr>
+			<th>Email</th>
+			<td>{{ user.email }}</td>
+		</tr>
+		{% endif %}
+		<tr>
+			<th>Password</th>
+			<td>{{ user.password }}</td>
+		</tr>
+		<tr>
+			<th>Active</th>
+			<td>{{ user.active ? 'Yes' : 'No' }}</td>
+		</tr>
+		{# <tr>
+			<th>Roles</th>
+			<td>{{ user.roles }}</td>
+		</tr> #}
+	</tbody>
+</table>
+
+<a class="btn btn-info" href="{{ path('user_index') }}">Atras</a>
+<a class="btn btn-warning" href="{{ path('user_edit', {'id': user.id}) }}">Editar</a>
+{% endblock %}

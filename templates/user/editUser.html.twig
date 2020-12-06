@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <a class="btn btn-info float-right"  href="{{ path('user_index') }}">Atras</a>
+        <h1>Editar Usuario</h1>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+            <br>
+            <div class="text-center">
+                <button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+    
+{% endblock %}
