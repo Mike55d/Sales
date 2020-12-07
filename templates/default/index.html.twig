@@ -18,14 +18,95 @@
   </div>
 </div>
 
+<div class="modal fade" id="editLineaModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Editar Linea</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="blockLinea">
+        <form id="lineaForm" method"post">
+          <input type="text" id="id" name="id" hidden>
+          <label for="">Chip</label>
+          <input type="text" placeholder="chip" name="chip" id="chip" class="form-control input-sm mb-2">
+          <label for="">Numero</label>
+          <input type="text" placeholder="numero" name="numero" id="numero" class="form-control input-sm mb-2">
+          <label for="">Operadora</label>
+          <input type="text" placeholder="operadora" name="operadora" id="operadora" class="form-control input-sm mb-2">
+          {# <select name="" class="form-control input-sm" id="operadora">
+            {% for operadora in operadoras %}
+              
+            {% endfor %}
+            </select> #}
+          <label for="">Tipo</label>
+          <input type="text" placeholder="tipo" id="tipo" name="tipo" class="form-control input-sm mb-2">
+          <label for="">Unidad</label>
+          <input type="text" class="form-control input-sm mb-2" readonly id="unidad">
+        </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="sendLineaForm">Guardar</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="newLineaModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Nueva Linea</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="blockLineaNew">
+        <form id="lineaFormNew" method"post">
+          <label for="">Chip</label>
+          <input type="text" placeholder="chip" name="chip" id="chip2" class="form-control input-sm mb-2">
+          <label for="">Numero</label>
+          <input type="text" placeholder="numero" name="numero" id="numero2" class="form-control input-sm mb-2">
+          <label for="">Operadora</label>
+          <input type="text" placeholder="operadora" name="operadora" id="operadora2" class="form-control input-sm mb-2">
+          {# <select name="" class="form-control input-sm" id="operadora">
+            {% for operadora in operadoras %}
+              
+            {% endfor %}
+            </select> #}
+          <label for="">Tipo</label>
+          <input type="text" placeholder="tipo" id="tipo2" name="tipo" class="form-control input-sm mb-2">
+          <label for="">Unidad</label>
+          <input type="text" class="form-control input-sm mb-2" readonly id="unidad2">
+          <input type="text" name="unidad" hidden id="idUnidad2">
+        </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="sendLineaNewForm">Guardar</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
 {% endblock %}
 
 {% block js %}
 
 <script src="{{ asset ('js/treePlugin/dist/jstree.js')}}"></script>
+<script src="http://malsup.github.io/jquery.blockUI.js"></script>
 
 <script>
   $(document).ready(function () {
+    let childrensStart;
+    let parent = {id:'',name:''};
     $('#jstree_demo').jstree({
       "core": {
         "animation": 0,
@@ -33,8 +114,12 @@
           if ((op === "move_node" || op === "copy_node") && node.type && node.type == "root") {
             return false;
           }
-          if ((op === "move_node" || op === "copy_node") && more && more.core && !confirm('Estas seguro ?')) {
-            return false;
+          if ((op === "move_node" || op === "copy_node") && more && more.core) {
+            if (childrensStart[0] == node.id) {
+              if (!confirm('Esta seguro que desea mover estas lineas ?')) {
+                return false
+              }
+            }
           }
           return true;
         },
@@ -50,6 +135,9 @@
         }
 
       },
+      'contextmenu': {
+        'items': customMenu
+      },
       "types": {
         "#": {
           "max_children": 1,
@@ -61,6 +149,7 @@
           "valid_children": ["default"]
         },
         "default": {
+          "icon": "{{ asset ('icons/phoneIcon.png')}}",
           "valid_children": []
         },
       },
@@ -83,12 +172,159 @@
         fail: function (error) {
           console.log(error);
         }
-      })
+      });
+    });
+
+    function customMenu(node) {
+      var items = {
+        'newUnidad': {
+          'label': 'Nuevo',
+          'icon': "{{ asset ('icons/newIcon.png')}}",
+          'action': function (node) {
+            openNewModal(node);
+          }
+        },
+        'editLinea': {
+          'label': 'Editar',
+          'icon': "{{ asset ('icons/editIcon.png')}}",
+          'action': function (node) {
+            openModalLinea(node);
+          }
+        },
+        'delLinea': {
+          'label': 'Borrar',
+          'icon': "{{ asset ('icons/delIcon.png')}}",
+          'action': function (node) {
+            delNode(node);
+          }
+        }
+      }
+      if (node.type === 'root') {
+        delete items.editLinea;
+        delete items.delLinea;
+      } else if (node.type === 'default') {
+        delete items.newUnidad;
+      }
+      return items;
+    }
+
+    $(document).on('dnd_start.vakata.jstree', function (e, data) {
+      childrensStart = data.data.nodes;
+      console.log(childrensStart);
     })
 
     $('.buscarBtn').click(function () {
       $('#jstree_demo').jstree(true).search($('.buscarInput').val());
-    })
+    });
+
+    function openModalLinea(node) {
+      $('#editLineaModal').modal('toggle');
+      let idLinea = node.reference.prevObject[0].id.replace('l', '');
+      console.log(idLinea);
+      $('#blockLinea').block({
+        message: 'Cargando'
+      });
+      $.ajax({
+        'url': "{{ path ('linea_get')}}",
+        'type': 'POST',
+        'data': 'id=' + idLinea,
+        success: function (res) {
+          linea = JSON.parse(res);
+          setDatosForm(linea);
+          $('#blockLinea').unblock();
+        },
+        fail: function (error) {
+          console.log(error);
+          $('#blockLinea').unblock();
+        }
+      });
+    }
+
+    function setDatosForm(linea) {
+      $('#id').val(linea.id);
+      $('#chip').val(linea.chip);
+      $('#numero').val(linea.numero);
+      $('#operadora').val(linea.operadora);
+      $('#tipo').val(linea.tipo);
+      $('#unidad').val(linea.unidad.nombre);
+    }
+
+    $('#sendLineaForm').click(function () {
+      form = $('#lineaForm').serialize();
+      $('#blockLinea').block({
+        message: 'Cargando'
+      });
+      $.ajax({
+        'url': "{{ path ('linea_editApi')}}",
+        'type': 'POST',
+        'data': form,
+        success: function (res) {
+          console.log(res);
+          idNode = 'l'+$('#id').val();
+          $('#jstree_demo').jstree().rename_node(idNode , $('#numero').val());
+          toastr.success('Guardado con exito :D');
+          $('#editLineaModal').modal('toggle');
+        },
+        fail: function (error) {
+          console.log(error);
+        }
+      });
+    });
+
+    function delNode(node){
+      console.log('delete');
+      let nodeId = node.reference.prevObject[0].id;
+      if(confirm('Estas seguro que desea eliminar esta linea')){
+        let lineaId = nodeId.replace('l','');
+        $.ajax({
+        'url': '/linea/'+lineaId+'/delApi',
+        'type': 'DELETE',
+        success: function (res) {
+          console.log(res)
+        },
+        fail: function (error) {
+          console.log(error);
+        }
+      });
+      $('#jstree_demo').jstree().delete_node([nodeId]);
+      }
+    }
+
+    function openNewModal(node){
+      $('#lineaFormNew')[0].reset()
+      parent.id = node.reference[0].parentElement.id;
+      parent.name = node.reference[0].innerText;
+      $('#unidad2').val(parent.name);
+      $('#idUnidad2').val(parent.id);
+      console.log(parent.name);
+      $('#newLineaModal').modal('toggle');
+      //console.log(node);
+    }
+
+    $('#sendLineaNewForm').click(function(){
+      $('#blockLineaNew').block({
+        message: 'Cargando'
+      });
+      form = $('#lineaFormNew').serialize();
+      $.ajax({
+        'url': "{{ path ('linea_newApi')}}",
+        'type': 'POST',
+        'data': form,
+        success: function (linea) {
+          $('#blockLineaNew').unblock();
+          nodeName = $('#numero2').val();
+          $('#jstree_demo').jstree().create_node(parent.id , nodeName);
+          $('#newLineaModal').modal('toggle');
+          toastr.success('Guardado con exito :D');
+        },
+        fail: function (error) {
+          console.log(error);
+          $('#blockLinea').unblock();
+        }
+      });
+      
+
+    });
 
   });
 </script>
