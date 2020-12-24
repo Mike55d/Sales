@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit UserLinea{% endblock %}
+
+{% block body %}
+    <h1>Edit UserLinea</h1>
+
+    {{ include('user_linea/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('user_linea_index') }}">back to list</a>
+{% endblock %}

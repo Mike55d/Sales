@@ -3,39 +3,47 @@
 {% block title %}Linea index{% endblock %}
 
 {% block body %}
-    <h1>Linea index</h1>
+<div class="row">
+	<div class="col-md-10 offset-md-1">
+		<div class="card">
+			<div class="card-body">
+				<h1>Lineas</h1>
+				<table class="table" id="dataTable">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Numero</th>
+							<th>Operadora</th>
+							<th>Chip</th>
+							<th>Tipo</th>
+							<th>actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for linea in lineas %}
+						<tr>
+							<td>{{ linea.id }}</td>
+							<td>{{ linea.numero }}</td>
+							<td>{{ linea.operadora.nombre }}</td>
+							<td>{{ linea.chip }}</td>
+							<td>{{ linea.tipo.tipo }}</td>
+							<td>
+								<a href="{{ path('linea_show', {'id': linea.id}) }}">show</a>
+								<a href="{{ path('linea_edit', {'id': linea.id}) }}">edit</a>
+								{{ include('linea/_delete_form.html.twig') }}
+							</td>
+						</tr>
+						{% else %}
+						<tr>
+							<td colspan="6">no records found</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Numero</th>
-                <th>Operadora</th>
-                <th>Chip</th>
-                <th>Tipo</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for linea in lineas %}
-            <tr>
-                <td>{{ linea.id }}</td>
-                <td>{{ linea.numero }}</td>
-                <td>{{ linea.operadora }}</td>
-                <td>{{ linea.chip }}</td>
-                <td>{{ linea.tipo }}</td>
-                <td>
-                    <a href="{{ path('linea_show', {'id': linea.id}) }}">show</a>
-                    <a href="{{ path('linea_edit', {'id': linea.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('linea_new') }}">Create new</a>
+				<a href="{{ path('linea_new') }}">Create new</a>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

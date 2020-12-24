@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TipoDispositivo{% endblock %}
+
+{% block body %}
+    <h1>TipoDispositivo</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ tipo_dispositivo.id }}</td>
+            </tr>
+            <tr>
+                <th>Tipo</th>
+                <td>{{ tipo_dispositivo.tipo }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('tipo_dispositivo_index') }}">back to list</a>
+
+    <a href="{{ path('tipo_dispositivo_edit', {'id': tipo_dispositivo.id}) }}">edit</a>
+
+    {{ include('tipo_dispositivo/_delete_form.html.twig') }}
+{% endblock %}

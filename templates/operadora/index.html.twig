@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Operadora index{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-10 offset-md-1">
+		<div class="card">
+			<div class="card-body">
+				<h1>Operadoras</h1>
+				<table class="table" id="dataTable">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Nombre</th>
+							<th>actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for operadora in operadoras %}
+						<tr>
+							<td>{{ operadora.id }}</td>
+							<td>{{ operadora.nombre }}</td>
+							<td>
+								<a href="{{ path('operadora_show', {'id': operadora.id}) }}">show</a>
+								<a href="{{ path('operadora_edit', {'id': operadora.id}) }}">edit</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<br>
+				<a href="{{ path('operadora_new') }}">Create new</a>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

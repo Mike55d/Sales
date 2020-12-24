@@ -2,15 +2,84 @@
 
 {% block css %}
 <link rel="stylesheet" href="{{ asset ('js/treePlugin/src/themes/default/style.css')}}" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock %}
 
 {% block body %}
-<div class="col-md-8 offset-md-2">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-info">
+        <div class="inner">
+          <h3 id="#totalLineas">{{totalLineas}}</h3>
+
+          <p>N° total de lineas</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-bag"></i>
+        </div>
+        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-success">
+        <div class="inner">
+          <h3>{{internet}}</h3>
+
+          <p>N° lineas con Internet</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-stats-bars"></i>
+        </div>
+        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-warning">
+        <div class="inner">
+          <h3>{{telefono}}</h3>
+
+          <p>N° lineas sin internet</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-person-add"></i>
+        </div>
+        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-danger">
+        <div class="inner">
+          <h3>{{modem}}</h3>
+
+          <p>N° modems</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-pie-graph"></i>
+        </div>
+        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <!-- ./col -->
+  </div>
+</div>
+
+
+<div class="col-md-12">
   <div class="card">
     <div class="card-body">
       <div class="text-center">
         <input type="text" placeholder="Buscar linea" class="form-control input-sm buscarInput mr-2">
         <button class="btn btn-success buscarBtn">Buscar</button>
+        <button class="btn btn-primary ml-3" id="refrescar">Refrescar</button>
       </div>
       <br><br>
       <div id="jstree_demo"></div>
@@ -19,7 +88,7 @@
 </div>
 
 <div class="modal fade" id="editLineaModal">
-  <div class="modal-dialog">
+  <div class="modal-dialog" id="blockLinea">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Editar Linea</h4>
@@ -27,29 +96,72 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" id="blockLinea">
+      <div class="modal-body">
+
         <form id="lineaForm" method"post">
           <input type="text" id="id" name="id" hidden>
-          <label for="">Chip</label>
-          <input type="text" placeholder="chip" name="chip" id="chip" class="form-control input-sm mb-2">
-          <label for="">Numero</label>
-          <input type="text" placeholder="numero" name="numero" id="numero" class="form-control input-sm mb-2">
-          <label for="">Operadora</label>
-          <input type="text" placeholder="operadora" name="operadora" id="operadora" class="form-control input-sm mb-2">
-          {# <select name="" class="form-control input-sm" id="operadora">
-            {% for operadora in operadoras %}
-              
-            {% endfor %}
-            </select> #}
-          <label for="">Tipo</label>
-          <input type="text" placeholder="tipo" id="tipo" name="tipo" class="form-control input-sm mb-2">
+          <div class="row">
+            <div class="col-md-4">
+              <label for="">DDD</label>
+              <input type="text" placeholder="DDD" name="ddd" id="ddd" required class="form-control input-sm mb-2">
+            </div>
+            <div class="col-md-4">
+              <label for="">Numero</label>
+              <input type="text" placeholder="numero" name="numero" required id="numero"
+                class="form-control input-sm mb-2">
+            </div>
+            <div class="col-md-4">
+              <label for="">Operadora</label>
+              <select name="operadora" id="operadora" class="form-control input-sm mb-2">
+                {% for operadora in operadoras %}
+                <option value="{{operadora.id}}">{{operadora.nombre}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-12 mt-2 mb-2">
+              <label for="">Usuario</label>
+              <select name="user" class="select2 form-control" id="user">
+                <option value="0">Seleccione un usuario</option>
+                {% for user in users %}
+                  <option value="{{user.id}}">{{user.nombre}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
           <label for="">Unidad</label>
           <input type="text" class="form-control input-sm mb-2" readonly id="unidad">
+          <label for=""> N° de Chip</label>
+          <input type="text" placeholder="Numero de chip" name="chip" required id="chip"
+            class="form-control input-sm mb-2">
+          <label class="block" for=""> N° de Serie</label>
+          <input type="text" placeholder="Numero de serie" name="serie" required id="serie"
+            class="form-control input-sm mb-2">
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <label class="mr-3" for="">Tipo</label>
+              <select name="tipo" class="form-control input-sm mb-2 " id="tipo">
+                {% for tipo in tipos %}
+                <option value="{{tipo.id}}">{{tipo.tipo}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 text-center pt-33">
+              <label class="mr-3" for="">Activa</label>
+              <input name="active" value="1" id="active" required type="checkbox" data-size="small" data-on="Si"
+                data-off="No" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+            </div>
+            <div class="col-md-4 text-center pt-33">
+              <label class="mr-3" for="">Internet</label>
+              <input name="internet" value="1" id="internet" required type="checkbox" data-size="small" data-on="Si"
+                data-off="No" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+            </div>
+          </div>
         </form>
+
       </div>
       <div class="modal-footer justify-content-between">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" id="sendLineaForm">Guardar</button>
+        <button type="button" class="btn btn-primary" id="sendLineaEditForm">Guardar</button>
       </div>
     </div>
     <!-- /.modal-content -->
@@ -58,7 +170,7 @@
 </div>
 
 <div class="modal fade" id="newLineaModal">
-  <div class="modal-dialog">
+  <div class="modal-dialog" id="blockLineaNew">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Nueva Linea</h4>
@@ -66,24 +178,65 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" id="blockLineaNew">
+      <div class="modal-body">
         <form id="lineaFormNew" method"post">
-          <label for="">Chip</label>
-          <input type="text" placeholder="chip" name="chip" id="chip2" class="form-control input-sm mb-2">
-          <label for="">Numero</label>
-          <input type="text" placeholder="numero" name="numero" id="numero2" class="form-control input-sm mb-2">
-          <label for="">Operadora</label>
-          <input type="text" placeholder="operadora" name="operadora" id="operadora2" class="form-control input-sm mb-2">
-          {# <select name="" class="form-control input-sm" id="operadora">
-            {% for operadora in operadoras %}
-              
-            {% endfor %}
-            </select> #}
-          <label for="">Tipo</label>
-          <input type="text" placeholder="tipo" id="tipo2" name="tipo" class="form-control input-sm mb-2">
+          <input type="text" id="idUnidad2" name="unidad" hidden>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="">DDD</label>
+              <input type="text" placeholder="DDD" required name="ddd" id="ddd2" class="form-control input-sm mb-2">
+            </div>
+            <div class="col-md-4">
+              <label for="">Numero</label>
+              <input type="text" placeholder="numero" required name="numero" id="numero2"
+                class="form-control input-sm mb-2">
+            </div>
+            <div class="col-md-4">
+              <label for="">Operadora</label>
+              <select name="operadora" id="operadora2" class="form-control input-sm mb-2">
+                {% for operadora in operadoras %}
+                <option value="{{operadora.id}}">{{operadora.nombre}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-12 mt-2 mb-2">
+              <label for="">Usuario</label>
+              <select name="user" class="select2 form-control" id="user2">
+                <option value="0">Seleccione un usuario</option>
+                {% for user in users %}
+                  <option value="{{user.id}}">{{user.nombre}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
           <label for="">Unidad</label>
           <input type="text" class="form-control input-sm mb-2" readonly id="unidad2">
-          <input type="text" name="unidad" hidden id="idUnidad2">
+          <label for=""> N° de Chip</label>
+          <input type="text" placeholder="Numero de chip" required name="chip" id="chip2"
+            class="form-control input-sm mb-2">
+          <label class="block" for=""> N° de Serie</label>
+          <input type="text" placeholder="Numero de serie" required name="serie" id="serie2"
+            class="form-control input-sm mb-2">
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <label class="mr-3" for="">Tipo</label>
+              <select name="tipo" class="form-control input-sm mb-2 " id="tipo2">
+                {% for tipo in tipos %}
+                <option value="{{tipo.id}}">{{tipo.tipo}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 text-center pt-33">
+              <label class="mr-3" for="">Activa</label>
+              <input name="active" value="1" id="active2" type="checkbox" data-size="small" data-on="Si" data-off="No"
+                data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+            </div>
+            <div class="col-md-4 text-center pt-33">
+              <label class="mr-3" for="">Internet</label>
+              <input name="internet" value="1" id="internet2" type="checkbox" data-size="small" data-on="Si"
+                data-off="No" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer justify-content-between">
@@ -96,17 +249,120 @@
   <!-- /.modal-dialog -->
 </div>
 
+
+<div class="modal fade" id="UnidadModal">
+  <div class="modal-dialog" id="blockUnidad">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Editar Unidad</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="FormUnidad" method"post">
+          <input type="text" name="id" id="idU" hidden>
+          <div class="row">
+            <div class="col-md-3">
+              <label for="">N°</label>
+              <input type="text" required class="form-control input-sm" name="numero" id="numeroU">
+            </div>
+            <div class="col-md-9">
+              <label for="">Nombre</label>
+              <input type="text" required class="form-control input-sm" name="nombre" id="nombreU">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="">Encargado de caja</label>
+              <input type="text" required class="form-control input-sm" name="encargado" id="encargadoU">
+            </div>
+            <div class="col-md-6">
+              <label for="">Email encargado</label>
+              <input type="text" required class="form-control input-sm" name="email" id="emailU">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="">Endereso</label>
+              <input type="text" required class="form-control input-sm" name="endereso" id="enderesoU">
+            </div>
+            <div class="col-md-6">
+              <label for="">Asociacion</label>
+              <select name="asociacion" class="form-control input-sm" id="asociacionU">
+                {% for asociacion in asociaciones %}
+                <option value="{{asociacion.id}}">{{asociacion.nombre}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <label for="">Ciudad</label>
+          <input type="text" required class="form-control input-sm mb-2" name="ciudad" id="ciudadU">
+          <div class="row">
+            <div class="col-md-12">
+              <label class="mr-3" for="">Activa</label>
+              <input name="active" value="1" id="activeU" type="checkbox" data-size="small" data-on="Si" data-off="No"
+                data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+              <label class="mr-3 ml-3" for="">Emails detallados</label>
+              <input name="emailDetallado" value="1" id="emailDetalladoU" type="checkbox" data-size="small" data-on="Si"
+                data-off="No" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="sendUnidadForm">Guardar</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
 {% endblock %}
 
 {% block js %}
-
 <script src="{{ asset ('js/treePlugin/dist/jstree.js')}}"></script>
 <script src="http://malsup.github.io/jquery.blockUI.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <script>
   $(document).ready(function () {
+    jQuery.extend(jQuery.validator.messages, {
+      required: "requerido *",
+    });
+
+    $('.select2').select2();
+
+    $("#lineaForm").validate({
+      submitHandler: function (form) {
+        sendEditForm();
+      }
+    });
+
+    $("#lineaFormNew").validate({
+      submitHandler: function (form) {
+        sendNewForm();
+      }
+    });
+
+    $("#FormUnidad").validate({
+      submitHandler: function (form) {
+        sendFormUnidad();
+      }
+    });
+
+
+    $('#active').bootstrapToggle();
+    $('#internet').bootstrapToggle();
     let childrensStart;
-    let parent = {id:'',name:''};
+    let parent = {
+      id: '',
+      name: ''
+    };
     $('#jstree_demo').jstree({
       "core": {
         "animation": 0,
@@ -149,7 +405,6 @@
           "valid_children": ["default"]
         },
         "default": {
-          "icon": "{{ asset ('icons/phoneIcon.png')}}",
           "valid_children": []
         },
       },
@@ -184,6 +439,13 @@
             openNewModal(node);
           }
         },
+        'editUnidad': {
+          'label': 'Editar',
+          'icon': "{{ asset ('icons/editIcon.png')}}",
+          'action': function (node) {
+            openModalUnidad(node);
+          }
+        },
         'editLinea': {
           'label': 'Editar',
           'icon': "{{ asset ('icons/editIcon.png')}}",
@@ -204,6 +466,7 @@
         delete items.delLinea;
       } else if (node.type === 'default') {
         delete items.newUnidad;
+        delete items.editUnidad;
       }
       return items;
     }
@@ -241,15 +504,24 @@
     }
 
     function setDatosForm(linea) {
+      console.log(linea.userLinea);
+      console.log(linea.userLinea ? linea.userLinea.id : 0 );
       $('#id').val(linea.id);
-      $('#chip').val(linea.chip);
+      $('#ddd').val(linea.ddd);
       $('#numero').val(linea.numero);
-      $('#operadora').val(linea.operadora);
-      $('#tipo').val(linea.tipo);
+      $('#operadora').val(linea.operadora.id);
+      $('#user').val(linea.userLinea ? linea.userLinea.id : 0 );
+      $('#user').trigger('change');
       $('#unidad').val(linea.unidad.nombre);
+      $('#chip').val(linea.chip);
+      $('#serie').val(linea.serie);
+      $('#tipo').val(linea.tipo.id);
+      $('#active').bootstrapToggle(linea.active ? 'on' : 'off');
+      $('#internet').bootstrapToggle(linea.internet ? 'on' : 'off');
     }
 
-    $('#sendLineaForm').click(function () {
+
+    function sendEditForm() {
       form = $('#lineaForm').serialize();
       $('#blockLinea').block({
         message: 'Cargando'
@@ -259,9 +531,12 @@
         'type': 'POST',
         'data': form,
         success: function (res) {
-          console.log(res);
-          idNode = 'l'+$('#id').val();
-          $('#jstree_demo').jstree().rename_node(idNode , $('#numero').val());
+          idNode = 'l' + $('#id').val();
+          let extra = '';
+          if($('#tipo option:selected').text() == 'Modem') extra = 'Modem';
+          if($('#tipo option:selected').text() == 'Celular' && $('#internet').is(":checked")) extra = 'Dados';
+          let newNameNode = $('#user option:selected').text()+' - Tel:('+$('#ddd').val()+')'+$('#numero').val()+' ('+extra+')';
+          $('#jstree_demo').jstree().rename_node(idNode,newNameNode);
           toastr.success('Guardado con exito :D');
           $('#editLineaModal').modal('toggle');
         },
@@ -269,29 +544,29 @@
           console.log(error);
         }
       });
-    });
+    }
 
-    function delNode(node){
+    function delNode(node) {
       console.log('delete');
       let nodeId = node.reference.prevObject[0].id;
-      if(confirm('Estas seguro que desea eliminar esta linea')){
-        let lineaId = nodeId.replace('l','');
+      if (confirm('Estas seguro que desea eliminar esta linea')) {
+        let lineaId = nodeId.replace('l', '');
         $.ajax({
-        'url': '/linea/'+lineaId+'/delApi',
-        'type': 'DELETE',
-        success: function (res) {
-          console.log(res)
-        },
-        fail: function (error) {
-          console.log(error);
-        }
-      });
-      $('#jstree_demo').jstree().delete_node([nodeId]);
+          'url': '/linea/' + lineaId + '/delApi',
+          'type': 'DELETE',
+          success: function (res) {
+            console.log(res)
+          },
+          fail: function (error) {
+            console.log(error);
+          }
+        });
+        $('#jstree_demo').jstree().delete_node([nodeId]);
       }
     }
 
-    function openNewModal(node){
-      $('#lineaFormNew')[0].reset()
+    function openNewModal(node) {
+      $('#lineaFormNew')[0].reset();
       parent.id = node.reference[0].parentElement.id;
       parent.name = node.reference[0].innerText;
       $('#unidad2').val(parent.name);
@@ -301,7 +576,44 @@
       //console.log(node);
     }
 
-    $('#sendLineaNewForm').click(function(){
+    function openModalUnidad(node) {
+
+      let id = node.reference[0].id.replace('_anchor', '');
+      console.log(id);
+      $('#UnidadModal').modal('toggle');
+      $('#blockUnidad').block({
+        message: 'Cargando'
+      });
+      $.ajax({
+        'url': "{{ path ('getUnidad')}}",
+        'type': 'POST',
+        'data': 'id=' + id,
+        success: function (res) {
+          let unidad = JSON.parse(res);
+          console.log(unidad);
+          setDatosFormUnidad(unidad);
+          $('#blockUnidad').unblock();
+        },
+        fail: function (error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function setDatosFormUnidad(unidad) {
+      $('#idU').val(unidad.id);
+      $('#numeroU').val(unidad.numero);
+      $('#nombreU').val(unidad.nombre);
+      $('#encargadoU').val(unidad.encargado);
+      $('#emailU').val(unidad.emailEncargado);
+      $('#enderesoU').val(unidad.endereso);
+      $('#asociacionU').val(unidad.asociacion.id);
+      $('#ciudadU').val(unidad.ciudad);
+      $('#activeU').bootstrapToggle(unidad.active ? 'on' : 'off');
+      $('#emailDetalladoU').bootstrapToggle(unidad.emailDetallado ? 'on' : 'off');
+    }
+
+    function sendNewForm() {
       $('#blockLineaNew').block({
         message: 'Cargando'
       });
@@ -313,7 +625,7 @@
         success: function (linea) {
           $('#blockLineaNew').unblock();
           nodeName = $('#numero2').val();
-          $('#jstree_demo').jstree().create_node(parent.id , nodeName);
+          $('#jstree_demo').jstree().create_node(parent.id, linea);
           $('#newLineaModal').modal('toggle');
           toastr.success('Guardado con exito :D');
         },
@@ -322,8 +634,47 @@
           $('#blockLinea').unblock();
         }
       });
-      
+    };
 
+    function sendFormUnidad() {
+      $('#blockUnidad').block({
+        message: 'Cargando'
+      });
+      form = $('#FormUnidad').serialize();
+      $.ajax({
+        'url': "{{ path ('editUnidadApi')}}",
+        'type': 'POST',
+        'data': form,
+        success: function (res) {
+          $('#blockUnidad').unblock();
+          $('#UnidadModal').modal('toggle');
+          $('#jstree_demo').jstree().rename_node($('#idU').val(), $('#nombreU').val());
+          toastr.success('Guardado con exito :D');
+        },
+        fail: function (error) {
+          console.log(error);
+          $('#blockLinea').unblock();
+        }
+      });
+    };
+
+    // Refrescar
+    $('#refrescar').click(function () {
+      $('#jstree_demo').jstree(true).refresh();
+    });
+
+    $('#sendLineaEditForm').click(function () {
+      console.log('blue');
+      $('#lineaForm').submit();
+    })
+
+    $('#sendLineaNewForm').click(function () {
+      console.log('red')
+      $('#lineaFormNew').submit();
+    });
+
+    $('#sendUnidadForm').click(function () {
+      $('#FormUnidad').submit();
     });
 
   });

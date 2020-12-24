@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New UserLinea{% endblock %}
+
+{% block body %}
+    <h1 class="text-center" >Nuevo usuario de linea</h1>
+
+    {{ include('user_linea/_form.html.twig') }}
+
+    <a href="{{ path('user_linea_index') }}">back to list</a>
+{% endblock %}

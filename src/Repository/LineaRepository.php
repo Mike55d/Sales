@@ -22,19 +22,23 @@ class LineaRepository extends ServiceEntityRepository
     // /**
     //  * @return Linea[] Returns an array of Linea objects
     //  */
-    /*
-    public function findByExampleField($value)
+    
+    public function getTotalRecords($tipo = null)
     {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('l')
+        ->select('count(l.id)');
+        if($tipo == 'telefono'){
+            $qb->where('l.tipo = 1 AND l.internet = 0');
+        }
+        if($tipo == 'internet'){
+            $qb->where('l.tipo = 1 AND l.internet = 1');
+        }
+        if($tipo == 'modem'){
+            $qb->where('l.tipo = 2');
+        }
+        return $qb->getQuery()->getSingleScalarResult();
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?Linea

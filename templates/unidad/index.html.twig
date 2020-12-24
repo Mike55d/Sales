@@ -3,35 +3,41 @@
 {% block title %}Unidad index{% endblock %}
 
 {% block body %}
-    <h1>Unidad index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Activa</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for unidad in unidads %}
-            <tr>
-                <td>{{ unidad.id }}</td>
-                <td>{{ unidad.nombre }}</td>
-                <td>{{ unidad.activa ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('unidad_show', {'id': unidad.id}) }}">show</a>
-                    <a href="{{ path('unidad_edit', {'id': unidad.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('unidad_new') }}">Create new</a>
+<div class="row">
+	<div class="col-md-10 offset-md-1">
+		<div class="card">
+			<div class="card-body">
+				<h1>Unidades</h1>
+				<table class="table" id="dataTable">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Nombre</th>
+							<th>Activa</th>
+							<th>actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for unidad in unidads %}
+						<tr>
+							<td>{{ unidad.id }}</td>
+							<td>{{ unidad.nombre }}</td>
+							<td>{{ unidad.activa ? 'Yes' : 'No' }}</td>
+							<td>
+								<a href="{{ path('unidad_show', {'id': unidad.id}) }}">show</a>
+								<a href="{{ path('unidad_edit', {'id': unidad.id}) }}">edit</a>
+							</td>
+						</tr>
+						{% else %}
+						<tr>
+							<td colspan="4">no records found</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<a href="{{ path('unidad_new') }}">Create new</a>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

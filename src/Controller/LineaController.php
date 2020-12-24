@@ -35,11 +35,21 @@ class LineaController extends AbstractController
 	 */
 	public function new(Request $request): Response
 	{
+		$em = $this->getDoctrine()->getManager();
 		$linea = new Linea();
 		$form = $this->createForm(LineaType::class, $linea);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
+			$findMatch = $em->getRepository('App:Linea')
+			->findBy(['ddd'=>$linea->getDdd(),'numero'=> $linea->getNumero()]);
+			if($findMatch){
+				return $this->render('linea/new.html.twig', [
+					'linea' => $linea,
+					'form' => $form->createView(),
+					'message' => 'DDD y Numero repetido.'
+				]);
+			}
 			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($linea);
 			$entityManager->flush();
@@ -97,24 +107,21 @@ class LineaController extends AbstractController
 		return $this->redirectToRoute('linea_index');
 	}
 
-		/**
+	/**
 	 * @Route("/{id}/delApi", name="linea_deleteApi", methods={"DELETE"})
 	 */
-	public function deleteApi(Request $request, Linea $linea): Response
+	public function deleteApi(Linea $linea): Response
 	{
-		if ($this->isCsrfTokenValid('delete' . $linea->getId(), $request->request->get('_token'))) {
-			$entityManager = $this->getDoctrine()->getManager();
-			$entityManager->remove($linea);
-			$entityManager->flush();
-		}
+		$entityManager = $this->getDoctrine()->getManager();
+		$entityManager->remove($linea);
+		$entityManager->flush();
 		return new JsonResponse('ok');
-
 	}
 
 	/**
 	 * @Route("/getApi", name="linea_get", methods={"POST"})
 	 */
-	public function getLinea(LineaRepository $lineaRepository , Request $request): Response
+	public function getLinea(LineaRepository $lineaRepository, Request $request): Response
 	{
 		$linea = $lineaRepository->find($request->get('id'));
 		$encoders = [new XmlEncoder(), new JsonEncoder()];
@@ -132,16 +139,28 @@ class LineaController extends AbstractController
 		$em = $this->getDoctrine()->getManager();
 		$linea = new Linea();
 		$unidad = $em->getRepository('App:Unidad')->find($request->get('unidad'));
+		$operadora = $em->getRepository('App:Operadora')->find($request->get('operadora'));
+		$tipo = $em->getRepository('App:TipoDispositivo')->find($request->get('tipo'));
+		$linea->setDdd($request->get('ddd'));
 		$linea->setNumero($request->get('numero'));
-		$linea->setOperadora($request->get('operadora'));
-		$linea->setChip($request->get('chip'));
-		$linea->setTipo($request->get('tipo'));
+		$linea->setOperadora($operadora);
 		$linea->setUnidad($unidad);
+		$linea->setChip($request->get('chip'));
+		$linea->setSerie($request->get('serie'));
+		$linea->setTipo($tipo);
+		$linea->setInternet($request->get('internet') ? 1 : 0);
+		$linea->setActive($request->get('active') ? 1 : 0);
 		$em->persist($linea);
 		$em->flush();
-		$lineaFormated = ['id' => 'l' . $linea->getId(),
-		'text' => $linea->getNumero(),
-		'state' => ['opened' => false, 'selected' => false]];
+		$icon = 'icons/phoneIcon.png';
+		if($linea->getTipo()->getTipo() == 'Modem') $icon = 'icons/modemIcon.png';
+		if($linea->getTipo()->getTipo() == 'Celular' && $linea->getInternet()) $icon = 'icons/wifiIcon.png';
+		$lineaFormated = [
+			'id' => 'l' . $linea->getId(),
+			'text' => $linea->getNumero(),
+			'state' => ['opened' => false, 'selected' => false],
+			'icon' => $icon
+		];
 		return new JsonResponse($lineaFormated);
 	}
 
@@ -149,14 +168,22 @@ class LineaController extends AbstractController
 	/**
 	 * @Route("/editApi", name="linea_editApi", methods={"POST"})
 	 */
-	public function editLineaApi(LineaRepository $lineaRepository , Request $request): Response
+	public function editApi(LineaRepository $lineaRepository, Request $request): Response
 	{
-		$linea = $lineaRepository->find($request->get('id'));
-		$linea->setNumero($request->get('numero'));
-		$linea->setOperadora($request->get('operadora'));
-		$linea->setChip($request->get('chip'));
-		$linea->setTipo($request->get('tipo'));
 		$em = $this->getDoctrine()->getManager();
+		$linea = $lineaRepository->find($request->get('id'));
+		$operadora = $em->getRepository('App:Operadora')->find($request->get('operadora'));
+		$tipo = $em->getRepository('App:TipoDispositivo')->find($request->get('tipo'));
+		$user = $em->getRepository('App:UserLinea')->find($request->get('user'));
+		$linea->setDdd($request->get('ddd'));
+		$linea->setNumero($request->get('numero'));
+		$linea->setOperadora($operadora);
+		$linea->setUserLinea($user);
+		$linea->setChip($request->get('chip'));
+		$linea->setSerie($request->get('serie'));
+		$linea->setTipo($tipo);
+		$linea->setInternet($request->get('internet') ? 1 : 0);
+		$linea->setActive($request->get('active') ? 1 : 0);
 		$em->flush();
 		return new JsonResponse('ok');
 	}

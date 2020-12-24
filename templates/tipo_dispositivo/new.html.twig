@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New TipoDispositivo{% endblock %}
+
+{% block body %}
+    <h1>Create new TipoDispositivo</h1>
+
+    {{ include('tipo_dispositivo/_form.html.twig') }}
+
+    <a href="{{ path('tipo_dispositivo_index') }}">back to list</a>
+{% endblock %}

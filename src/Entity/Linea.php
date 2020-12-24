@@ -20,10 +20,17 @@ class Linea
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $numero;
+    private $ddd;
 
     /**
      * @ORM\Column(type="string", length=255)
+     */
+    private $numero;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Operadora::class)
+     * @ORM\JoinColumn(nullable=true , onDelete="SET NULL")
      */
     private $operadora;
 
@@ -35,13 +42,42 @@ class Linea
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $serie;
+
+    /**
+     * @ORM\Column(type="text", length=555 , nullable=true)
+     */
+    private $observaciones;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoDispositivo::class)
+     * @ORM\JoinColumn(nullable=true )
+     */
     private $tipo;
 
     /**
-    * @ORM\ManyToOne(targetEntity=Unidad::class)
-    * @ORM\JoinColumn(nullable=true , onDelete="SET NULL")
-    */
+     * @ORM\ManyToOne(targetEntity=Unidad::class)
+     * @ORM\JoinColumn(nullable=true )
+     */
     private $unidad;
+
+    /**
+     * @ORM\Column(type="boolean", length=555)
+     */
+    private $active;
+
+    /**
+     * @ORM\Column(type="boolean", length=555)
+     */
+    private $internet;
+
+    
+    /**
+     * @ORM\ManyToOne(targetEntity=UserLinea::class)
+     * @ORM\JoinColumn(nullable=true )
+     */
+    private $userLinea;
+
 
     public function getId(): ?int
     {
@@ -60,18 +96,6 @@ class Linea
         return $this;
     }
 
-    public function getOperadora(): ?string
-    {
-        return $this->operadora;
-    }
-
-    public function setOperadora(string $operadora): self
-    {
-        $this->operadora = $operadora;
-
-        return $this;
-    }
-
     public function getChip(): ?string
     {
         return $this->chip;
@@ -84,12 +108,24 @@ class Linea
         return $this;
     }
 
-    public function getTipo(): ?string
+    public function getOperadora(): ?Operadora
+    {
+        return $this->operadora;
+    }
+
+    public function setOperadora(?Operadora $operadora): self
+    {
+        $this->operadora = $operadora;
+
+        return $this;
+    }
+
+    public function getTipo(): ?TipoDispositivo
     {
         return $this->tipo;
     }
 
-    public function setTipo(string $tipo): self
+    public function setTipo(?TipoDispositivo $tipo): self
     {
         $this->tipo = $tipo;
 
@@ -104,6 +140,78 @@ class Linea
     public function setUnidad(?Unidad $unidad): self
     {
         $this->unidad = $unidad;
+
+        return $this;
+    }
+
+    public function getDdd(): ?string
+    {
+        return $this->ddd;
+    }
+
+    public function setDdd(string $ddd): self
+    {
+        $this->ddd = $ddd;
+
+        return $this;
+    }
+
+    public function getSerie(): ?string
+    {
+        return $this->serie;
+    }
+
+    public function setSerie(string $serie): self
+    {
+        $this->serie = $serie;
+
+        return $this;
+    }
+
+    public function getObservaciones(): ?string
+    {
+        return $this->observaciones;
+    }
+
+    public function setObservaciones(string $observaciones): self
+    {
+        $this->observaciones = $observaciones;
+
+        return $this;
+    }
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getInternet(): ?bool
+    {
+        return $this->internet;
+    }
+
+    public function setInternet(bool $internet): self
+    {
+        $this->internet = $internet;
+
+        return $this;
+    }
+
+    public function getUserLinea(): ?UserLinea
+    {
+        return $this->userLinea;
+    }
+
+    public function setUserLinea(?UserLinea $userLinea): self
+    {
+        $this->userLinea = $userLinea;
 
         return $this;
     }

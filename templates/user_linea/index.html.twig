@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UserLinea index{% endblock %}
+
+{% block body %}
+<div class="container">
+	<div class="card">
+		<div class="card-body">
+			<h1>Usuarios de lineas </h1>
+			<table class="table table-bordered text-center" width="100%"  id="dataTable">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Nombre</th>
+						<th>Telefono</th>
+						<th>Email</th>
+						<th>Orden</th>
+						<th>Active</th>
+						<th>actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user_linea in user_lineas %}
+					<tr>
+						<td>{{ user_linea.id }}</td>
+						<td>{{ user_linea.nombre }}</td>
+						<td>{{ user_linea.telefono }}</td>
+						<td>{{ user_linea.email }}</td>
+						<td>{{ user_linea.orden }}</td>
+						<td>{{ user_linea.active }}</td>
+						<td>
+							<a href="{{ path('user_linea_show', {'id': user_linea.id}) }}">show</a>
+							<a href="{{ path('user_linea_edit', {'id': user_linea.id}) }}">edit</a>
+							{{ include('user_linea/_delete_form.html.twig') }}
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			<a href="{{ path('user_linea_new') }}">Create new</a>
+		</div>
+	</div>
+</div>
+{% endblock %}

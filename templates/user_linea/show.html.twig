@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UserLinea{% endblock %}
+
+{% block body %}
+    <h1>UserLinea</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user_linea.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ user_linea.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Telefono</th>
+                <td>{{ user_linea.telefono }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user_linea.email }}</td>
+            </tr>
+            <tr>
+                <th>Orden</th>
+                <td>{{ user_linea.orden }}</td>
+            </tr>
+            <tr>
+                <th>Active</th>
+                <td>{{ user_linea.active }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('user_linea_index') }}">back to list</a>
+
+    <a href="{{ path('user_linea_edit', {'id': user_linea.id}) }}">edit</a>
+
+    {{ include('user_linea/_delete_form.html.twig') }}
+{% endblock %}

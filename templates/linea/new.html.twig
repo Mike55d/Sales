@@ -3,11 +3,26 @@
 {% block title %}New Linea{% endblock %}
 
 {% block body %}
-<div class="card">
-	<div class="card-body">
-		<h1>Nueva Linea</h1>
-		{{ include('linea/_form.html.twig') }}
-		<a href="{{ path('linea_index') }}">Volver</a>
+<div class="row">
+	<div class="col-md-6 offset-md-3">
+		<div class="card">
+			<div class="card-body">
+				<h1>Nueva Linea</h1>
+				{{ include('linea/_form.html.twig') }}
+				<a href="{{ path('linea_index') }}">Volver</a>
+			</div>
+		</div>
 	</div>
 </div>
+{% endblock %}
+
+{% block js %}
+	<script>
+		$(document).ready(function(){
+			let message = "{{message}}"
+			if(message){
+				toastr.error(message)
+			}
+		})
+	</script>
 {% endblock %}

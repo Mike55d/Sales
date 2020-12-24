@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Asociacion{% endblock %}
+
+{% block body %}
+    <h1>Asociacion</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ asociacion.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ asociacion.nombre }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('asociacion_index') }}">back to list</a>
+
+    <a href="{{ path('asociacion_edit', {'id': asociacion.id}) }}">edit</a>
+
+    {{ include('asociacion/_delete_form.html.twig') }}
+{% endblock %}

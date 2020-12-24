@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TipoDispositivo index{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-10 offset-md-1">
+		<div class="card">
+			<div class="card-body">
+				<h1>Tipos de dispositivos</h1>
+				<table class="table" id="dataTable">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Tipo</th>
+							<th>actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for tipo_dispositivo in tipo_dispositivos %}
+						<tr>
+							<td>{{ tipo_dispositivo.id }}</td>
+							<td>{{ tipo_dispositivo.tipo }}</td>
+							<td>
+								<a href="{{ path('tipo_dispositivo_show', {'id': tipo_dispositivo.id}) }}">show</a>
+								<a href="{{ path('tipo_dispositivo_edit', {'id': tipo_dispositivo.id}) }}">edit</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<br>
+				<a href="{{ path('tipo_dispositivo_new') }}">Create new</a>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

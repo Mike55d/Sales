@@ -10,6 +10,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+
 
 /**
  * @Route("/unidad")
@@ -39,7 +44,6 @@ class UnidadController extends AbstractController
 			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($unidad);
 			$entityManager->flush();
-
 			return $this->redirectToRoute('unidad_index');
 		}
 
@@ -69,7 +73,6 @@ class UnidadController extends AbstractController
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$this->getDoctrine()->getManager()->flush();
-
 			return $this->redirectToRoute('unidad_index');
 		}
 
@@ -105,10 +108,22 @@ class UnidadController extends AbstractController
 			$lineas = $em->getRepository('App:Linea')->findBy(['unidad' => $unidad]);
 			$lineasFormated = [];
 			foreach ($lineas as $linea) {
+				$icon = 'icons/phoneIcon.png';
+				$extra = '';
+				if($linea->getTipo()->getTipo() == 'Modem') {
+					$icon = 'icons/modemIcon.png';
+					$extra = 'Modem';
+				}
+				if($linea->getTipo()->getTipo() == 'Celular' && $linea->getInternet()) {
+					$icon = 'icons/wifiIcon.png';
+					$extra = 'Dados';
+				}
+				$user = $linea->getUserLinea() ? $linea->getUserLinea()->getNombre() : '';
 				$lineasFormated[] = [
 					'id' => 'l' . $linea->getId(),
-					'text' => $linea->getNumero(),
+				'text' => $user.' - Tel:('.$linea->getDdd().')'.$linea->getNumero().' ('.$extra.')',
 					'state' => ['opened' => false, 'selected' => false],
+					'icon'=> $icon
 				];
 			}
 			$data[] = [
@@ -148,4 +163,40 @@ class UnidadController extends AbstractController
 		}
 		return new JsonResponse('ok');
 	}
+
+	/**
+	 * @Route("/getUnidad", name="getUnidad", methods={"POST","GET"})
+	 */
+	public function getUnidad(Request $request)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$unidad = $em->getRepository('App:Unidad')->find($request->get('id'));
+		$encoders = [new XmlEncoder(), new JsonEncoder()];
+		$normalizers = [new ObjectNormalizer()];
+		$serializer = new Serializer($normalizers, $encoders);
+		$jsonContent = $serializer->serialize($unidad, 'json');
+		return new JsonResponse($jsonContent);
+	}
+
+	/**
+	 * @Route("/editUnidadApi", name="editUnidadApi", methods={"POST","GET"})
+	 */
+	public function editUnidadApi(Request $request, UnidadRepository $unidadRepo)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$asociacion = $em->getRepository('App:Asociacion')->find($request->get('asociacion'));
+		$unidad = $unidadRepo->find($request->get('id'));
+		$unidad->setNumero($request->get('numero'));
+		$unidad->setNombre($request->get('nombre'));
+		$unidad->setEncargado($request->get('encargado'));
+		$unidad->setEmailEncargado($request->get('email'));
+		$unidad->setEndereso($request->get('endereso'));
+		$unidad->setAsociacion($asociacion);
+		$unidad->setCiudad($request->get('ciudad'));
+		$unidad->setActiva($request->get('active') ? 1 : 0);
+		$unidad->setEmailDetallado($request->get('emailDetallado') ? 1 : 0);
+		$em->flush();
+		return new JsonResponse('ok');
+	}
+
 }
