@@ -533,9 +533,9 @@
         success: function (res) {
           idNode = 'l' + $('#id').val();
           let extra = '';
-          if($('#tipo option:selected').text() == 'Modem') extra = 'Modem';
-          if($('#tipo option:selected').text() == 'Celular' && $('#internet').is(":checked")) extra = 'Dados';
-          let newNameNode = $('#user option:selected').text()+' - Tel:('+$('#ddd').val()+')'+$('#numero').val()+' ('+extra+')';
+          if($('#tipo option:selected').text() == 'Modem') extra = '(Modem)';
+          if($('#tipo option:selected').text() == 'Celular' && $('#internet').is(":checked")) extra = '(Dados)';
+          let newNameNode = $('#user option:selected').text()+' - Tel:('+$('#ddd').val()+')'+$('#numero').val()+extra;
           $('#jstree_demo').jstree().rename_node(idNode,newNameNode);
           toastr.success('Guardado con exito :D');
           $('#editLineaModal').modal('toggle');

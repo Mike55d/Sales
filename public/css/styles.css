@@ -57,3 +57,7 @@ label.error{
 span.select2-selection__arrow{
   height: 40px !important;
 }
+
+li .jstree-anchor{
+  font-weight: bold;
+}

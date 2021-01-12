@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<nav>
+	<div class="nav nav-tabs" id="nav-tab" role="tablist">
+		<a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+			aria-controls="nav-home" aria-selected="true">Lineas</a>
+		<a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+			aria-controls="nav-profile" aria-selected="false">Unidades</a>
+		<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+			aria-controls="nav-contact" aria-selected="false">Usuarios</a>
+	</div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+	<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+		<div class="col-md-10 offset-md-1 mt-4">
+			<div class="card">
+				<div class="card-body">
+					<h1>Lineas</h1>
+					<table class="table" id="dataTable">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Numero</th>
+								<th>Operadora</th>
+								<th>Chip</th>
+								<th>Tipo</th>
+								<th>actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for linea in lineas %}
+							<tr>
+								<td>{{ linea.id }}</td>
+								<td>{{ linea.numero }}</td>
+								<td>{{ linea.operadora.nombre }}</td>
+								<td>{{ linea.chip }}</td>
+								<td>{{ linea.tipo.tipo }}</td>
+								<td>
+									<a href="{{ path('linea_show', {'id': linea.id}) }}">show</a>
+									<a href="{{ path('linea_edit', {'id': linea.id}) }}">edit</a>
+									{{ include('linea/_delete_form.html.twig') }}
+								</td>
+							</tr>
+							{% else %}
+							<tr>
+								<td colspan="6">no records found</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+		<div class="col-md-10 offset-md-1 mt-4">
+			<div class="card">
+				<div class="card-body">
+					<h1>Lineas</h1>
+					<table class="table" id="dataTable2">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Numero</th>
+								<th>Operadora</th>
+								<th>Chip</th>
+								<th>Tipo</th>
+								<th>actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for linea in lineas %}
+							<tr>
+								<td>{{ linea.id }}</td>
+								<td>{{ linea.numero }}</td>
+								<td>{{ linea.operadora.nombre }}</td>
+								<td>{{ linea.chip }}</td>
+								<td>{{ linea.tipo.tipo }}</td>
+								<td>
+									<a href="{{ path('linea_show', {'id': linea.id}) }}">show</a>
+									<a href="{{ path('linea_edit', {'id': linea.id}) }}">edit</a>
+									{{ include('linea/_delete_form.html.twig') }}
+								</td>
+							</tr>
+							{% else %}
+							<tr>
+								<td colspan="6">no records found</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+		<div class="col-md-10 offset-md-1 mt-4">
+			<div class="card">
+				<div class="card-body">
+					<h1>Usuarios de lineas </h1>
+					<table class="table table-bordered text-center" width="100%" id="dataTable3">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Nombre</th>
+								<th>Telefono</th>
+								<th>Email</th>
+								<th>Orden</th>
+								<th>Active</th>
+								<th>actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for user_linea in users %}
+							<tr>
+								<td>{{ user_linea.id }}</td>
+								<td>{{ user_linea.nombre }}</td>
+								<td>{{ user_linea.telefono }}</td>
+								<td>{{ user_linea.email }}</td>
+								<td>{{ user_linea.orden }}</td>
+								<td>{{ user_linea.active }}</td>
+								<td>
+									<a href="{{ path('user_linea_show', {'id': user_linea.id}) }}">show</a>
+									<a href="{{ path('user_linea_edit', {'id': user_linea.id}) }}">edit</a>
+									{{ include('user_linea/_delete_form.html.twig') }}
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+	<script>
+	$("#dataTable2").DataTable({
+			"responsive": true,
+			"autoWidth": false,
+		});
+		$("#dataTable3").DataTable({
+			"responsive": true,
+			"autoWidth": false,
+		});
+	</script>
+{% endblock %}

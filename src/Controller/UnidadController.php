@@ -110,20 +110,23 @@ class UnidadController extends AbstractController
 			foreach ($lineas as $linea) {
 				$icon = 'icons/phoneIcon.png';
 				$extra = '';
-				if($linea->getTipo()->getTipo() == 'Modem') {
+				if ($linea->getTipo()->getTipo() == 'Modem') {
 					$icon = 'icons/modemIcon.png';
-					$extra = 'Modem';
+					$extra = '(Modem)';
 				}
-				if($linea->getTipo()->getTipo() == 'Celular' && $linea->getInternet()) {
+				if ($linea->getTipo()->getTipo() == 'Celular' && $linea->getInternet()) {
 					$icon = 'icons/wifiIcon.png';
-					$extra = 'Dados';
+					$extra = '(Dados)';
 				}
 				$user = $linea->getUserLinea() ? $linea->getUserLinea()->getNombre() : '';
+				if (!$user) {
+					$icon = 'icons/noUser.png';
+				}
 				$lineasFormated[] = [
 					'id' => 'l' . $linea->getId(),
-				'text' => $user.' - Tel:('.$linea->getDdd().')'.$linea->getNumero().' ('.$extra.')',
+					'text' => $user . ' - Tel:(' . $linea->getDdd() . ')' . $linea->getNumero() .$extra,
 					'state' => ['opened' => false, 'selected' => false],
-					'icon'=> $icon
+					'icon' => $icon
 				];
 			}
 			$data[] = [
@@ -198,5 +201,4 @@ class UnidadController extends AbstractController
 		$em->flush();
 		return new JsonResponse('ok');
 	}
-
 }
